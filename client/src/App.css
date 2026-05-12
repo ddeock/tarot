@@ -1,0 +1,41 @@
+.home-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
+  background-color: #f9f9f9;
+}
+
+.home-container h1 {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn {
+  padding: 0.8rem 2rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #333;
+  color: white;
+  border: 1px solid #333;
+}
+
+.btn-primary:hover {
+  background-color: #555;
+  border-color: #555;
+}
