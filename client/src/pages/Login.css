@@ -1,0 +1,246 @@
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 100px); /* Adjust based on navbar height */
+  background-color: #ffffff;
+  padding: 40px 20px;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+}
+
+/* Social Login Buttons */
+.social-login {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  border: none;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  position: relative;
+}
+
+.social-btn .icon {
+  position: absolute;
+  left: 20px;
+  font-size: 18px;
+}
+
+.social-btn.kakao {
+  background-color: #FEE500;
+  color: #000000;
+}
+
+.social-btn.naver {
+  background-color: #03C75A;
+  color: #ffffff;
+}
+
+.social-btn.google {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #dddddd;
+}
+
+.social-btn:hover {
+  opacity: 0.9;
+}
+
+/* Separator */
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 30px 0;
+  color: #999;
+  font-size: 13px;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.separator:not(:empty)::before {
+  margin-right: 15px;
+}
+
+.separator:not(:empty)::after {
+  margin-left: 15px;
+}
+
+/* Login Form */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.input-group input {
+  height: 55px;
+  padding: 0 15px;
+  border: none;
+  font-size: 15px;
+  outline: none;
+}
+
+.input-group input:first-child {
+  border-bottom: 1px solid #eeeeee;
+}
+
+.login-options {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 25px;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  user-select: none;
+}
+
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  height: 18px;
+  width: 18px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+  background-color: #f5f5f5;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+  background-color: #333;
+  border-color: #333;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.checkbox-container .checkmark:after {
+  left: 6px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.login-btn {
+  width: 100%;
+  height: 55px;
+  background-color: #333333;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background-color 0.2s;
+}
+
+.login-btn:hover {
+  background-color: #000000;
+}
+
+.login-btn:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 13px;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+/* Links */
+.form-links {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.form-links a {
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.form-links a:hover {
+  text-decoration: underline;
+}
+
+/* Non-member Button */
+.non-member-btn {
+  width: 100%;
+  height: 55px;
+  background-color: #8c9bb0;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.non-member-btn:hover {
+  background-color: #7a8a9e;
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 0 10px;
+  }
+}

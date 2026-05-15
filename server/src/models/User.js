@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema({
     email: {
@@ -71,6 +72,13 @@ UserSchema.pre('save', async function (next) {
 // 비밀번호 일치 여부 확인 메서드
 UserSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
+};
+
+// JWT 토큰 서명 및 반환 메서드
+UserSchema.methods.getSignedJwtToken = function () {
+    return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRE
+    });
 };
 
 module.exports = mongoose.model('User', UserSchema);
