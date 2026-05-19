@@ -34,3 +34,12 @@ exports.protect = async (req, res, next) => {
         return res.status(401).json({ success: false, error: '유효하지 않은 토큰입니다.' });
     }
 };
+
+// 관리자 권한 확인 미들웨어
+exports.admin = (req, res, next) => {
+    if (req.user && req.user.user_type === '관리자') {
+        next();
+    } else {
+        res.status(403).json({ success: false, error: '관리자 권한이 필요합니다.' });
+    }
+};

@@ -6,14 +6,16 @@
 
 /* Hero Section */
 .hero-section {
-  height: 40vh;
+  min-height: 450px;
+  height: 50vh;
   background-size: cover;
   background-position: center;
   display: flex;
   align-items: center;
-  padding: 0 10%;
+  padding: 40px 10%;
   color: white;
   position: relative;
+  box-sizing: border-box;
 }
 
 .hero-content {
@@ -106,7 +108,7 @@
 
 /* Best Sellers */
 .section {
-  padding: 100px 10%;
+  padding: 50px 10%;
 }
 
 .section-title {
@@ -178,7 +180,7 @@
   justify-content: center;
   color: #8c8c8c;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
 
@@ -258,7 +260,8 @@
   opacity: 0.9;
 }
 
-.promo-link, .promo-btn {
+.promo-link,
+.promo-btn {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -274,7 +277,8 @@
   transition: all 0.3s ease;
 }
 
-.promo-link:hover, .promo-btn:hover {
+.promo-link:hover,
+.promo-btn:hover {
   background-color: white;
   color: #1a1a2e;
 }
@@ -364,7 +368,8 @@
   padding: 0;
 }
 
-.footer-column li, .footer-column p {
+.footer-column li,
+.footer-column p {
   font-size: 0.85rem;
   color: #666;
   margin-bottom: 12px;
@@ -386,18 +391,54 @@
 }
 
 @media (max-width: 1024px) {
-  .hero-title { font-size: 3rem; }
-  .product-grid { grid-template-columns: repeat(3, 1fr); }
-  .feature-bar { grid-template-columns: repeat(2, 1fr); gap: 40px; }
-  .promo-section { grid-template-columns: 1fr; height: auto; }
-  .promo-banner { height: 400px; }
-  .newsletter-section { flex-direction: column; text-align: center; gap: 40px; }
-  .newsletter-form { flex-direction: column; width: 100%; }
-  .newsletter-form input { width: 100%; }
-  .footer-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero-title {
+    font-size: 3rem;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .feature-bar {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+
+  .promo-section {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .promo-banner {
+    height: 400px;
+  }
+
+  .newsletter-section {
+    flex-direction: column;
+    text-align: center;
+    gap: 40px;
+  }
+
+  .newsletter-form {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .newsletter-form input {
+    width: 100%;
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 640px) {
-  .product-grid { grid-template-columns: repeat(2, 1fr); }
-  .footer-grid { grid-template-columns: 1fr; }
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
 }

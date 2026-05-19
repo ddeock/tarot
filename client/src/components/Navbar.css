@@ -90,3 +90,30 @@
   border-color: #ced4da;
   color: #212529;
 }
+
+.cart-icon-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  transition: color 0.2s;
+}
+
+.cart-icon-link:hover {
+  color: #007bff;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: #ef4444;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 0.1rem 0.4rem;
+  border-radius: 9999px;
+  min-width: 16px;
+  text-align: center;
+}

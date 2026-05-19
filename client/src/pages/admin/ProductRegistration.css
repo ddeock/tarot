@@ -177,9 +177,9 @@
   color: #94a3b8;
 }
 
-.input-with-icon input {
+.form-group .input-with-icon input {
   width: 100%;
-  padding-left: 40px;
+  padding-left: 36px;
 }
 
 .toggle-group {

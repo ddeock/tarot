@@ -182,7 +182,11 @@ const AdminProducts = () => {
                       <td><input type="checkbox" /></td>
                       <td className="sku-cell">{product.sku}</td>
                       <td className="product-info-cell">
-                        <img src={product.image} alt={product.name} />
+                        <img 
+                          src={product.image ? (product.image.startsWith('http') ? product.image : `http://localhost:5000${product.image.startsWith('/') ? '' : '/'}${product.image}`) : 'https://via.placeholder.com/44'} 
+                          alt={product.name} 
+                          onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/44?text=No+Img'; }}
+                        />
                         <div className="product-details">
                           <p className="product-name">{product.name}</p>
                           <p className="product-brand">{product.brand || 'PrimeMuse'}</p>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ArrowLeft,
   LayoutDashboard,
@@ -12,7 +12,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import './ProductRegistration.css';
 
@@ -35,6 +35,41 @@ const ProductRegistration = () => {
   });
 
   const [images, setImages] = useState([]);
+  const { id } = useParams();
+  const isEditMode = !!id;
+
+  useEffect(() => {
+    if (isEditMode) {
+      const fetchProduct = async () => {
+        try {
+          const response = await axios.get(`http://localhost:5000/api/products/${id}`);
+          if (response.data.success) {
+            const product = response.data.data;
+            setFormData({
+              name: product.name,
+              category: product.category,
+              sku: product.sku || '',
+              description: product.description || '',
+              price: product.price,
+              originalPrice: product.originalPrice || 0,
+              stock: product.stock,
+              minStockAlert: product.minStockAlert || 10,
+              onSale: product.onSale || false,
+              tags: product.tags || '',
+              weight: product.weight || 0,
+              brand: product.brand || '',
+              isActive: product.isActive
+            });
+            setImages(product.images && product.images.length > 0 ? product.images : (product.image ? [product.image] : []));
+          }
+        } catch (error) {
+          console.error('Error fetching product for edit:', error);
+          alert('상품 정보를 불러오는데 실패했습니다.');
+        }
+      };
+      fetchProduct();
+    }
+  }, [id, isEditMode]);
 
   // Cloudinary settings from environment variables
   const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -90,15 +125,20 @@ const ProductRegistration = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/api/products', productData);
+      let response;
+      if (isEditMode) {
+        response = await axios.put(`http://localhost:5000/api/products/${id}`, productData);
+      } else {
+        response = await axios.post('http://localhost:5000/api/products', productData);
+      }
 
       if (response.data.success) {
-        alert('상품이 성공적으로 등록되었습니다!');
-        navigate('/admin');
+        alert(isEditMode ? '상품이 성공적으로 수정되었습니다!' : '상품이 성공적으로 등록되었습니다!');
+        navigate('/admin/products');
       }
     } catch (error) {
-      console.error('Error registering product:', error);
-      alert(error.response?.data?.error || '상품 등록 중 오류가 발생했습니다.');
+      console.error('Error saving product:', error);
+      alert(error.response?.data?.error || '상품 저장 중 오류가 발생했습니다.');
     }
   };
 
@@ -119,8 +159,8 @@ const ProductRegistration = () => {
           </div>
         </div>
         <div className="header-title-area">
-          <h1>새 상품 등록</h1>
-          <p>새로운 상품의 정보를 입력하세요. <span className="required-mark">*</span> 표시는 필수 항목입니다.</p>
+          <h1>{isEditMode ? '상품 수정' : '새 상품 등록'}</h1>
+          <p>{isEditMode ? '상품의 정보를 수정하세요.' : '새로운 상품의 정보를 입력하세요.'} <span className="required-mark">*</span> 표시는 필수 항목입니다.</p>
         </div>
       </header>
 
@@ -265,7 +305,11 @@ const ProductRegistration = () => {
             <div className="image-upload-grid">
               {images.map((url, index) => (
                 <div key={index} className="image-preview-box">
-                  <img src={url} alt={`Preview ${index}`} />
+                  <img 
+                    src={url?.startsWith('http') ? url : `http://localhost:5000${url?.startsWith('/') ? '' : '/'}${url}`} 
+                    alt={`Preview ${index}`} 
+                    onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/100?text=No+Img'; }}
+                  />
                   <button
                     type="button"
                     className="remove-image-btn"
@@ -289,7 +333,7 @@ const ProductRegistration = () => {
         </section>
 
         <div className="form-actions">
-          <button type="submit" className="prod-reg-submit-btn">상품 등록</button>
+          <button type="submit" className="prod-reg-submit-btn">{isEditMode ? '상품 수정완료' : '상품 등록'}</button>
         </div>
       </form>
     </div>

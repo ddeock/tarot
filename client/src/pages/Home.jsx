@@ -11,7 +11,7 @@ import {
   MessageSquare,
   Hash
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Home.css';
 
@@ -29,20 +29,41 @@ const bestSellers = [
   { id: 5, name: 'SHADOWSCAPES TAROT', brand: 'Stephanie Pui-Mun Law', price: 68000, image: 'https://images.unsplash.com/photo-1590424768314-5d336829707b?auto=format&fit=crop&q=80&w=300&h=400' },
 ];
 
+const mockAccessories = [
+  { id: 101, name: '벨벳 타로 스프레드 천', brand: 'PrimeMuse', price: 15000, image: 'https://images.unsplash.com/photo-1601024445121-e5b82f121a71?auto=format&fit=crop&q=80&w=300&h=400' },
+  { id: 102, name: '크리스탈 정화 스톤 세트', brand: 'PrimeMuse', price: 22000, image: 'https://images.unsplash.com/photo-1635332511475-4c07c1303102?auto=format&fit=crop&q=80&w=300&h=400' },
+  { id: 103, name: '고급 타로 보관함 원목', brand: 'PrimeMuse', price: 45000, image: 'https://images.unsplash.com/photo-1590424768472-391807664687?auto=format&fit=crop&q=80&w=300&h=400' },
+  { id: 104, name: '스머지 스틱 (화이트 세이지)', brand: 'PrimeMuse', price: 12000, image: 'https://images.unsplash.com/photo-1615147342761-9238e15d8b96?auto=format&fit=crop&q=80&w=300&h=400' },
+  { id: 105, name: '타로 리딩 노트', brand: 'PrimeMuse', price: 9000, image: 'https://images.unsplash.com/photo-1590424768314-5d336829707b?auto=format&fit=crop&q=80&w=300&h=400' },
+];
+
 const Home = () => {
-  const [products, setProducts] = useState([]);
+  const [bestProducts, setBestProducts] = useState([]);
+  const [accessoryProducts, setAccessoryProducts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/products');
         if (response.data.success && response.data.data.length > 0) {
-          setProducts(response.data.data.slice(0, 5));
+          const allProducts = response.data.data;
+
+          let cards = allProducts.filter(p => p.category === '카드').slice(0, 5);
+          let accs = allProducts.filter(p => p.category === '악세사리').slice(0, 5);
+
+          if (cards.length === 0) cards = bestSellers;
+          if (accs.length === 0) accs = mockAccessories;
+
+          setBestProducts(cards);
+          setAccessoryProducts(accs);
         } else {
-          setProducts(bestSellers);
+          setBestProducts(bestSellers);
+          setAccessoryProducts(mockAccessories);
         }
       } catch (error) {
-        setProducts(bestSellers);
+        setBestProducts(bestSellers);
+        setAccessoryProducts(mockAccessories);
       }
     };
     fetchProducts();
@@ -68,12 +89,66 @@ const Home = () => {
       <section className="section best-sellers">
         <h2 className="section-title">BEST SELLERS</h2>
         <div className="product-grid">
-          {products.map((product) => (
-            <div key={product._id || product.id} className="product-card">
+          {bestProducts.map((product) => (
+            <div
+              key={product._id || product.id}
+              className="product-card"
+              onClick={() => navigate(`/product/${product._id || product.id}`)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="product-image">
-                <img src={product.image} alt={product.name} />
-                <button className="wishlist-btn"><Heart size={18} /></button>
+                <img
+                  src={product.image?.startsWith('http') ? product.image : `http://localhost:5000${product.image?.startsWith('/') ? '' : '/'}${product.image}`}
+                  alt={product.name}
+                  onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/300x400?text=No+Image'; }}
+                />
+                <button
+                  className="wishlist-btn"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent navigation when clicking wishlist
+                    // Add wishlist logic here later
+                  }}
+                >
+                  <Heart size={18} />
+                </button>
                 <div className="badge">BEST</div>
+              </div>
+              <div className="product-info">
+                <h3 className="product-name">{product.name}</h3>
+                <p className="product-brand">{product.brand || 'PrimeMuse'}</p>
+                <p className="product-price">₩ {product.price.toLocaleString()}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Accessories */}
+      <section className="section accessories-section">
+        <h2 className="section-title">ACCESSORIES</h2>
+        <div className="product-grid">
+          {accessoryProducts.map((product) => (
+            <div
+              key={product._id || product.id}
+              className="product-card"
+              onClick={() => navigate(`/product/${product._id || product.id}`)}
+              style={{ cursor: 'pointer' }}
+            >
+              <div className="product-image">
+                <img
+                  src={product.image?.startsWith('http') ? product.image : `http://localhost:5000${product.image?.startsWith('/') ? '' : '/'}${product.image}`}
+                  alt={product.name}
+                  onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/300x400?text=No+Image'; }}
+                />
+                <button
+                  className="wishlist-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <Heart size={18} />
+                </button>
+                <div className="badge" style={{ backgroundColor: '#1a1a1a' }}>NEW</div>
               </div>
               <div className="product-info">
                 <h3 className="product-name">{product.name}</h3>
@@ -91,14 +166,12 @@ const Home = () => {
           <div className="promo-content">
             <h3>NEW ARRIVALS</h3>
             <p>새롭게 입고된 타로와 오라클을<br />가장 먼저 만나보세요.</p>
-            <Link to="/products" className="promo-link">VIEW ALL <ChevronRight size={16} /></Link>
           </div>
         </div>
         <div className="promo-banner accessories" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${accessoriesBg})` }}>
           <div className="promo-content">
             <h3>TAROT ACCESSORIES</h3>
             <p>타로 리딩을 더욱 특별하게 만들어 줄<br />다양한 액세서리를 만나보세요.</p>
-            <button className="promo-btn">SHOP NOW <ChevronRight size={16} /></button>
           </div>
         </div>
       </section>

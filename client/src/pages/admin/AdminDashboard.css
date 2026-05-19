@@ -209,11 +209,16 @@
   font-size: 14px;
   color: #5b667e;
   border-bottom: 1px solid #fcfdfe;
+  white-space: nowrap;
 }
 
 .admin-table td.bold {
   font-weight: 600;
   color: #1a1a2e;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .status-badge {

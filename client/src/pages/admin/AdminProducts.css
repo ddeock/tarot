@@ -140,6 +140,7 @@
   font-size: 0.9rem;
   color: #334155;
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .checkbox-col {
@@ -150,6 +151,10 @@
   font-family: monospace;
   color: #64748b;
   font-size: 0.85rem;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .product-info-cell {

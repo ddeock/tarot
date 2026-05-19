@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Package, 
-  ShoppingCart, 
-  Users, 
-  Layers, 
-  CreditCard, 
-  Settings 
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Users,
+  Layers,
+  CreditCard,
+  Settings
 } from 'lucide-react';
 import './AdminSidebar.css';
 
@@ -39,25 +39,8 @@ const AdminSidebar = () => {
           <ul className="menu-list">
             {mainItems.map((item) => (
               <li key={item.path}>
-                <Link 
-                  to={item.path} 
-                  className={`menu-link ${location.pathname === item.path ? 'active' : ''}`}
-                >
-                  <span className="menu-icon">{item.icon}</span>
-                  <span className="menu-text">{item.name}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="menu-group">
-          <p className="group-title">관리</p>
-          <ul className="menu-list">
-            {managementItems.map((item) => (
-              <li key={item.path}>
-                <Link 
-                  to={item.path} 
+                <Link
+                  to={item.path}
                   className={`menu-link ${location.pathname === item.path ? 'active' : ''}`}
                 >
                   <span className="menu-icon">{item.icon}</span>

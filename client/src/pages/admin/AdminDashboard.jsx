@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   CreditCard, 
   ShoppingBag, 
@@ -9,16 +9,59 @@ import {
   Home,
   Plus
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
+  const [orders, setOrders] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userStr = localStorage.getItem('user');
+        if (!userStr) {
+          navigate('/login');
+          return;
+        }
+        const { token } = JSON.parse(userStr);
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        
+        const [ordersRes, usersRes, productsRes] = await Promise.all([
+          axios.get('http://localhost:5000/api/orders', config),
+          axios.get('http://localhost:5000/api/users', config),
+          axios.get('http://localhost:5000/api/products')
+        ]);
+
+        if (ordersRes.data.success) setOrders(ordersRes.data.data.reverse()); // 최신순으로 정렬되게
+        if (usersRes.data.success) setUsers(usersRes.data.data.reverse());
+        if (productsRes.data.success) setProducts(productsRes.data.data);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [navigate]);
+
+  const totalRevenue = orders.reduce((sum, order) => {
+    if (order.orderStatus !== '주문취소') {
+      return sum + (order.totalPrice || 0);
+    }
+    return sum;
+  }, 0);
+
   const stats = [
     { 
       title: '총 매출', 
-      value: '₩12,456,000', 
-      change: '+12.5%', 
+      value: `₩${totalRevenue.toLocaleString()}`, 
+      change: '누적 데이터', 
       trend: 'up', 
       icon: <CreditCard className="stat-icon-inner" />,
       iconBg: '#eff6ff',
@@ -26,17 +69,17 @@ const AdminDashboard = () => {
     },
     { 
       title: '총 주문', 
-      value: '324', 
-      change: '+8.2%', 
+      value: orders.length.toString(), 
+      change: '누적 데이터', 
       trend: 'up', 
       icon: <ShoppingBag className="stat-icon-inner" />,
       iconBg: '#fef2f2',
       iconColor: '#ef4444'
     },
     { 
-      title: '신규 고객', 
-      value: '156', 
-      change: '+23.1%', 
+      title: '총 고객', 
+      value: users.length.toString(), 
+      change: '누적 데이터', 
       trend: 'up', 
       icon: <UserPlus className="stat-icon-inner" />,
       iconBg: '#f0fdf4',
@@ -44,21 +87,54 @@ const AdminDashboard = () => {
     },
     { 
       title: '상품 수', 
-      value: '89', 
-      change: '-2.4%', 
-      trend: 'down', 
+      value: products.length.toString(), 
+      change: '등록된 상품', 
+      trend: 'up', 
       icon: <Box className="stat-icon-inner" />,
       iconBg: '#faf5ff',
       iconColor: '#a855f7'
     },
   ];
 
-  const recentOrders = [
-    { id: '#ORD-001', customer: '김철수', product: '운명의 타로 세트', price: '₩45,000', status: '배송중' },
-    { id: '#ORD-002', customer: '이영희', product: '심플 릴렉스 스프레드', price: '₩28,000', status: '완료' },
-    { id: '#ORD-003', customer: '박민수', product: '프리미엄 셔플링 매트', price: '₩15,000', status: '취소' },
-    { id: '#ORD-004', customer: '최지우', product: '오후의 타로 가이드북', price: '₩12,000', status: '완료' },
-  ];
+  const recentOrders = orders.slice(0, 5).map(order => ({
+    id: order._id,
+    customer: order.shippingAddress?.recipientName || (order.user ? order.user.name : '알수없음'),
+    product: order.orderItems.length > 1 ? `${order.orderItems[0]?.name} 외 ${order.orderItems.length - 1}건` : order.orderItems[0]?.name,
+    productImage: order.orderItems[0]?.image,
+    price: `₩${order.totalPrice.toLocaleString()}`,
+    status: order.orderStatus
+  }));
+
+  const getStatusBadgeClass = (status) => {
+    switch(status) {
+      case '결제대기': return 'inactive';
+      case '결제완료': return 'active';
+      case '상품준비중': return 'active'; 
+      case '배송중': return 'active';
+      case '배송완료': return 'active';
+      case '주문취소': return 'soldout';
+      default: return '';
+    }
+  };
+
+  const recentCustomers = users.slice(0, 4).map(u => ({
+    name: u.name,
+    email: u.email,
+    date: new Date(u.createdAt).toISOString().split('T')[0]
+  }));
+
+  if (loading) {
+    return (
+      <div className="admin-layout">
+        <AdminSidebar />
+        <main className="admin-main">
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+            <h2>데이터를 불러오는 중입니다...</h2>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="admin-layout">
@@ -109,7 +185,7 @@ const AdminDashboard = () => {
           <div className="content-card">
             <div className="content-card-header">
               <h3>최근 주문</h3>
-              <button className="view-all-btn">전체 보기</button>
+              <Link to="/admin/orders" className="view-all-btn">전체 보기</Link>
             </div>
             <div className="table-wrapper">
               <table className="admin-table">
@@ -123,19 +199,33 @@ const AdminDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentOrders.map((order) => (
-                    <tr key={order.id}>
-                      <td className="bold">{order.id}</td>
-                      <td>{order.customer}</td>
-                      <td>{order.product}</td>
-                      <td>{order.price}</td>
-                      <td>
-                        <span className={`status-badge ${order.status}`}>
-                          {order.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
+                  {recentOrders.length === 0 ? (
+                    <tr><td colSpan="5" style={{textAlign: 'center', padding: '2rem'}}>최근 주문 내역이 없습니다.</td></tr>
+                  ) : (
+                    recentOrders.map((order) => (
+                      <tr key={order.id}>
+                        <td className="bold" style={{fontSize: '0.85rem'}}>{order.id}</td>
+                        <td>{order.customer}</td>
+                        <td style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          <img 
+                            src={order.productImage ? (order.productImage.startsWith('http') ? order.productImage : `http://localhost:5000${order.productImage.startsWith('/') ? '' : '/'}${order.productImage}`) : 'https://placehold.co/44?text=No+Img'} 
+                            alt={order.product || '상품 이미지'} 
+                            style={{ width: '44px', height: '44px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #f1f5f9' }}
+                            onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/44?text=No+Img'; }}
+                          />
+                          <div className="product-details">
+                            <p className="product-name" style={{ margin: 0, fontWeight: 600 }}>{order.product}</p>
+                          </div>
+                        </td>
+                        <td>{order.price}</td>
+                        <td>
+                          <span className={`status-badge ${getStatusBadgeClass(order.status)}`}>
+                            {order.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -147,21 +237,20 @@ const AdminDashboard = () => {
               <button className="view-all-btn">전체 보기</button>
             </div>
             <div className="recent-customers-list">
-              {[
-                { name: '김철수', email: 'chulsoo@example.com', date: '2026-05-14' },
-                { name: '이영희', email: 'younghee@example.com', date: '2026-05-13' },
-                { name: '박민수', email: 'minsoo@example.com', date: '2026-05-13' },
-                { name: '최지우', email: 'jiwoo@example.com', date: '2026-05-12' },
-              ].map((customer, idx) => (
-                <div key={idx} className="customer-item">
-                  <div className="customer-avatar">{customer.name[0]}</div>
-                  <div className="customer-info">
-                    <p className="customer-name">{customer.name}</p>
-                    <p className="customer-email">{customer.email}</p>
+              {recentCustomers.length === 0 ? (
+                 <div style={{textAlign: 'center', padding: '2rem', color: '#666'}}>최근 가입한 고객이 없습니다.</div>
+              ) : (
+                recentCustomers.map((customer, idx) => (
+                  <div key={idx} className="customer-item">
+                    <div className="customer-avatar">{customer.name[0]}</div>
+                    <div className="customer-info">
+                      <p className="customer-name">{customer.name}</p>
+                      <p className="customer-email">{customer.email}</p>
+                    </div>
+                    <span className="customer-date">{customer.date}</span>
                   </div>
-                  <span className="customer-date">{customer.date}</span>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </section>
