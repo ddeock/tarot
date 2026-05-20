@@ -12,6 +12,10 @@ const MyOrders = () => {
   const [activeTab, setActiveTab] = useState('전체');
   const navigate = useNavigate();
 
+  const userStr = localStorage.getItem('user');
+  const userData = userStr ? JSON.parse(userStr) : null;
+  const isAdminUser = userData?.user_type === '관리자' || userData?.user_type === 'admin' || userData?.role === 'admin';
+
   const tabs = ['전체', '결제대기', '결제완료', '상품준비중', '배송중', '배송완료', '주문취소'];
 
   useEffect(() => {
@@ -25,8 +29,6 @@ const MyOrders = () => {
 
         const userData = JSON.parse(userStr);
         const { token } = userData;
-        
-        const isAdminUser = userData?.user_type === '관리자' || userData?.user_type === 'admin' || userData?.role === 'admin';
         
         const endpoint = isAdminUser 
           ? `${API_URL}/api/orders` 
@@ -141,20 +143,22 @@ const MyOrders = () => {
                   </div>
 
                   <div className="order-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div className="status-select-wrapper">
-                      <select
-                        value={order.orderStatus}
-                        onChange={(e) => handleUpdateStatus(order._id, e.target.value)}
-                        className="status-select"
-                      >
-                        <option value="결제대기">결제대기</option>
-                        <option value="결제완료">결제완료</option>
-                        <option value="상품준비중">상품준비중</option>
-                        <option value="배송중">배송중</option>
-                        <option value="배송완료">배송완료</option>
-                        <option value="주문취소">주문취소</option>
-                      </select>
-                    </div>
+                    {isAdminUser && (
+                      <div className="status-select-wrapper">
+                        <select
+                          value={order.orderStatus}
+                          onChange={(e) => handleUpdateStatus(order._id, e.target.value)}
+                          className="status-select"
+                        >
+                          <option value="결제대기">결제대기</option>
+                          <option value="결제완료">결제완료</option>
+                          <option value="상품준비중">상품준비중</option>
+                          <option value="배송중">배송중</option>
+                          <option value="배송완료">배송완료</option>
+                          <option value="주문취소">주문취소</option>
+                        </select>
+                      </div>
+                    )}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <span className="total-label">총 결제금액</span>
                       <span className="total-price">{order.totalPrice.toLocaleString()}원</span>
