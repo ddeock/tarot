@@ -21,8 +21,16 @@ const MyOrders = () => {
           return;
         }
 
-        const { token } = JSON.parse(userStr);
-        const res = await axios.get('http://localhost:5000/api/orders/myorders', {
+        const userData = JSON.parse(userStr);
+        const { token } = userData;
+        
+        const isAdminUser = userData?.user_type === '관리자' || userData?.user_type === 'admin' || userData?.role === 'admin';
+        
+        const endpoint = isAdminUser 
+          ? 'http://localhost:5000/api/orders' 
+          : 'http://localhost:5000/api/orders/myorders';
+          
+        const res = await axios.get(endpoint, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -41,6 +49,27 @@ const MyOrders = () => {
     fetchMyOrders();
   }, [navigate]);
 
+  const handleUpdateStatus = async (orderId, newStatus) => {
+    try {
+      const userStr = localStorage.getItem('user');
+      const { token } = JSON.parse(userStr);
+
+      const res = await axios.put(`http://localhost:5000/api/orders/${orderId}/status`, {
+        orderStatus: newStatus
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (res.data.success) {
+        setOrders(orders.map(order => order._id === orderId ? { ...order, orderStatus: newStatus } : order));
+        alert('주문 상태가 변경되었습니다.');
+      }
+    } catch (error) {
+      console.error('상태 변경 실패:', error);
+      alert('주문 상태 변경에 실패했습니다.');
+    }
+  };
+
   if (loading) {
     return <div className="myorders-loading">주문 내역을 불러오는 중입니다...</div>;
   }
@@ -54,15 +83,18 @@ const MyOrders = () => {
         <p className="page-subtitle">지금까지 주문하신 내역을 확인하실 수 있습니다.</p>
 
         <div className="status-tabs">
-          {tabs.map(tab => (
-            <button
-              key={tab}
-              className={`status-tab ${activeTab === tab ? 'active' : ''}`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
+          {tabs.map(tab => {
+            const count = tab === '전체' ? orders.length : orders.filter(o => o.orderStatus === tab).length;
+            return (
+              <button
+                key={tab}
+                className={`status-tab ${activeTab === tab ? 'active' : ''}`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab} {count > 0 && <span className="tab-count">{count}</span>}
+              </button>
+            );
+          })}
         </div>
 
         {filteredOrders.length === 0 ? (
@@ -87,9 +119,9 @@ const MyOrders = () => {
                 </div>
 
                 <div className="order-body">
-                  <div className="order-status-badge">
-                    {order.orderStatus === '결제완료' ? <Package size={16} /> : <Truck size={16} />}
-                    <span>{order.orderStatus}</span>
+                  <div className="order-status-display">
+                    {order.orderStatus === '결제완료' ? <Package size={18} className="status-icon" /> : <Truck size={18} className="status-icon" />}
+                    <span className="status-text">{order.orderStatus}</span>
                   </div>
 
                   <div className="order-items">
@@ -106,9 +138,25 @@ const MyOrders = () => {
                     ))}
                   </div>
 
-                  <div className="order-footer">
-                    <span className="total-label">총 결제금액</span>
-                    <span className="total-price">{order.totalPrice.toLocaleString()}원</span>
+                  <div className="order-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div className="status-select-wrapper">
+                      <select
+                        value={order.orderStatus}
+                        onChange={(e) => handleUpdateStatus(order._id, e.target.value)}
+                        className="status-select"
+                      >
+                        <option value="결제대기">결제대기</option>
+                        <option value="결제완료">결제완료</option>
+                        <option value="상품준비중">상품준비중</option>
+                        <option value="배송중">배송중</option>
+                        <option value="배송완료">배송완료</option>
+                        <option value="주문취소">주문취소</option>
+                      </select>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <span className="total-label">총 결제금액</span>
+                      <span className="total-price">{order.totalPrice.toLocaleString()}원</span>
+                    </div>
                   </div>
                 </div>
               </div>

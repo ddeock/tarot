@@ -13,7 +13,7 @@
 }
 
 .myorders-container {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -61,6 +61,23 @@
   border-color: #d4af37;
   color: #fff;
   font-weight: 600;
+}
+
+.tab-count {
+  display: inline-block;
+  background-color: #f1f3f5;
+  color: #868e96;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 12px;
+  margin-left: 6px;
+  transition: all 0.2s ease;
+}
+
+.status-tab.active .tab-count {
+  background-color: #fff;
+  color: #d4af37;
 }
 
 .empty-orders {
@@ -171,17 +188,54 @@
   padding: 20px;
 }
 
-.order-status-badge {
-  display: inline-flex;
+.order-status-display {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background-color: #eefaf4;
-  color: #2e8b57;
-  border-radius: 20px;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.status-icon {
+  color: #d4af37;
+}
+
+.status-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1f1f1f;
+}
+
+.status-select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.status-select {
+  appearance: none;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 6px 30px 6px 12px;
   font-size: 0.85rem;
   font-weight: 600;
-  margin-bottom: 20px;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23495057' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 14px;
+}
+
+.status-select:hover {
+  border-color: #adb5bd;
+  background-color: #e9ecef;
+}
+
+.status-select:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
 }
 
 .order-items {
@@ -249,7 +303,7 @@
     align-items: flex-start;
     gap: 10px;
   }
-  
+
   .order-detail-link {
     align-self: flex-start;
   }

@@ -20,6 +20,6 @@ router.route('/:id').get(protect, getOrderById);
 
 router.route('/:id/pay').put(protect, updateOrderToPaid);
 
-router.route('/:id/status').put(protect, admin, updateOrderStatus);
+router.route('/:id/status').put(protect, updateOrderStatus);
 
 module.exports = router;

@@ -114,7 +114,7 @@ const ProductDetail = () => {
     }
 
     const itemsPrice = product.price * quantity;
-    const shippingPrice = itemsPrice >= 50000 ? 0 : 3000;
+    const shippingPrice = 0; // 전상품 무료배송
     const totalPrice = itemsPrice + shippingPrice;
 
     const cartItems = [{
