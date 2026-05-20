@@ -61,7 +61,8 @@
   transition: all 0.2s;
 }
 
-.thumbnail.active, .thumbnail:hover {
+.thumbnail.active,
+.thumbnail:hover {
   opacity: 1;
   border-color: #333;
 }
@@ -241,7 +242,8 @@
 .total-value {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #d32f2f; /* Highlight color for total */
+  color: #d32f2f;
+  /* Highlight color for total */
 }
 
 /* Buttons */
@@ -288,7 +290,8 @@
 .btn-buy {
   flex: 2;
   border: none;
-  background-color: #ffd400; /* Yellow from design */
+  background-color: #ffd400;
+  /* Yellow from design */
   color: #212529;
   font-size: 1.1rem;
   font-weight: 700;
@@ -310,7 +313,8 @@
   display: flex;
   border-bottom: 1px solid #dee2e6;
   position: sticky;
-  top: 70px; /* Assuming navbar is ~70px tall */
+  top: 51px;
+  /* Assuming navbar is ~70px tall */
   background: white;
   z-index: 10;
 }
@@ -373,7 +377,8 @@
 .long-detail-images img {
   width: 100%;
   display: block;
-  margin-bottom: -1px; /* Remove gap between images */
+  margin-bottom: -1px;
+  /* Remove gap between images */
 }
 
 @media (max-width: 768px) {
@@ -381,11 +386,11 @@
     grid-template-columns: 1fr;
     gap: 32px;
   }
-  
+
   .tabs-header {
     top: 60px;
   }
-  
+
   .tab-btn {
     font-size: 0.9rem;
     padding: 16px 0;
