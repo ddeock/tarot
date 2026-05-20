@@ -5,6 +5,8 @@ import { Heart, ShoppingCart } from 'lucide-react';
 import './Products.css';
 import heroBg from '../assets/hero_bg.png';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +29,7 @@ const Products = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('http://localhost:5000/api/products');
+        const response = await axios.get(`${API_URL}/api/products`);
         if (response.data.success) {
           let fetchedProducts = response.data.data;
 

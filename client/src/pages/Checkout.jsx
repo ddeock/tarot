@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Checkout.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -38,7 +40,7 @@ const Checkout = () => {
       if (userStr) {
         try {
           const { token } = JSON.parse(userStr);
-          const res = await axios.get('http://localhost:5000/api/users/me', {
+          const res = await axios.get(`${API_URL}/api/users/me`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           if (res.data.success) {
@@ -98,7 +100,7 @@ const Checkout = () => {
           product: item.product._id
         }));
 
-        const res = await axios.post('http://localhost:5000/api/orders', {
+        const res = await axios.post(`${API_URL}/api/orders`, {
           orderItems,
           shippingAddress,
           paymentMethod,
@@ -112,7 +114,7 @@ const Checkout = () => {
         if (res.data.success) {
           const orderId = res.data.data._id;
           try {
-            await axios.delete('http://localhost:5000/api/cart', {
+            await axios.delete(`${API_URL}/api/cart`, {
               headers: { Authorization: `Bearer ${token}` }
             });
             window.dispatchEvent(new Event('storage'));
@@ -167,7 +169,7 @@ const Checkout = () => {
             product: item.product._id
           }));
 
-          const res = await axios.post('http://localhost:5000/api/orders', {
+          const res = await axios.post(`${API_URL}/api/orders`, {
             orderItems,
             shippingAddress,
             paymentMethod,
@@ -185,7 +187,7 @@ const Checkout = () => {
             
             // 2. 장바구니 비우기
             try {
-              await axios.delete('http://localhost:5000/api/cart', {
+              await axios.delete(`${API_URL}/api/cart`, {
                 headers: { Authorization: `Bearer ${token}` }
               });
               window.dispatchEvent(new Event('storage'));

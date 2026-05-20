@@ -5,6 +5,8 @@ import axios from 'axios';
 import logo from '../assets/logo.png';
 import './Navbar.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const Navbar = () => {
   const [user, setUser] = useState(null);
   const [cartCount, setCartCount] = useState(0);
@@ -12,7 +14,7 @@ const Navbar = () => {
 
   const fetchCartCount = async (token) => {
     try {
-      const res = await axios.get('http://localhost:5000/api/cart', {
+      const res = await axios.get(`${API_URL}/api/cart`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success && res.data.data.items) {
@@ -30,7 +32,7 @@ const Navbar = () => {
       const { token } = JSON.parse(loggedInUser);
       if (token) {
         try {
-          const res = await axios.get('http://localhost:5000/api/users/me', {
+          const res = await axios.get(`${API_URL}/api/users/me`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

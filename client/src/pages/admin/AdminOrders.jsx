@@ -16,6 +16,8 @@ import axios from 'axios';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import './AdminProducts.css'; // Reusing the same layout css
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,7 +35,7 @@ const AdminOrders = () => {
       }
       const { token } = JSON.parse(userStr);
       
-      const response = await axios.get('http://localhost:5000/api/orders', {
+      const response = await axios.get(`${API_URL}/api/orders`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.data.success) {
@@ -55,7 +57,7 @@ const AdminOrders = () => {
       const userStr = localStorage.getItem('user');
       const { token } = JSON.parse(userStr);
 
-      const response = await axios.put(`http://localhost:5000/api/orders/${id}/status`, {
+      const response = await axios.put(`${API_URL}/api/orders/${id}/status`, {
         orderStatus: newStatus
       }, {
         headers: { Authorization: `Bearer ${token}` }

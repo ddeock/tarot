@@ -14,6 +14,8 @@ import axios from 'axios';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import './AdminProducts.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const AdminCustomers = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +33,7 @@ const AdminCustomers = () => {
       }
       const { token } = JSON.parse(userStr);
       
-      const response = await axios.get('http://localhost:5000/api/users', {
+      const response = await axios.get(`${API_URL}/api/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.data.success) {
@@ -56,7 +58,7 @@ const AdminCustomers = () => {
       const userStr = localStorage.getItem('user');
       const { token } = JSON.parse(userStr);
 
-      const response = await axios.delete(`http://localhost:5000/api/users/${id}`, {
+      const response = await axios.delete(`${API_URL}/api/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

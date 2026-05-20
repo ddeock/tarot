@@ -4,6 +4,8 @@ import axios from 'axios';
 import { CheckCircle, Package, Truck } from 'lucide-react';
 import './OrderSuccess.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const OrderSuccess = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -20,7 +22,7 @@ const OrderSuccess = () => {
         }
         
         const { token } = JSON.parse(userStr);
-        const res = await axios.get(`http://localhost:5000/api/orders/${id}`, {
+        const res = await axios.get(`${API_URL}/api/orders/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 

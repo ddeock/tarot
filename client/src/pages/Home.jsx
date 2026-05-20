@@ -20,6 +20,8 @@ import heroBg from '../assets/hero_bg.png';
 import newArrivalsBg from '../assets/new_arrivals_banner.png';
 import accessoriesBg from '../assets/accessories_banner.png';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 // Mock data for Best Sellers
 const bestSellers = [
   { id: 1, name: 'THE STARCHILD TAROT', brand: 'Danielle Noel', price: 78000, image: 'https://images.unsplash.com/photo-1601024445121-e5b82f121a71?auto=format&fit=crop&q=80&w=300&h=400' },
@@ -45,7 +47,7 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/products');
+        const response = await axios.get(`${API_URL}/api/products`);
         if (response.data.success && response.data.data.length > 0) {
           const allProducts = response.data.data;
 

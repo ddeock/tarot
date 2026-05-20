@@ -21,6 +21,8 @@ import axios from 'axios';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import './AdminProducts.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +32,7 @@ const AdminProducts = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/products');
+      const response = await axios.get(`${API_URL}/api/products`);
       if (response.data.success) {
         setProducts(response.data.data);
       }
@@ -47,7 +49,7 @@ const AdminProducts = () => {
 
   const handleToggleStatus = async (id, currentStatus) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/products/${id}`, {
+      const response = await axios.put(`${API_URL}/api/products/${id}`, {
         isActive: !currentStatus
       });
       if (response.data.success) {
@@ -62,7 +64,7 @@ const AdminProducts = () => {
   const handleDelete = async (id) => {
     if (window.confirm('정말로 이 상품을 삭제하시겠습니까?')) {
       try {
-        const response = await axios.delete(`http://localhost:5000/api/products/${id}`);
+        const response = await axios.delete(`${API_URL}/api/products/${id}`);
         if (response.data.success) {
           setProducts(products.filter(p => p._id !== id));
           alert('상품이 삭제되었습니다.');

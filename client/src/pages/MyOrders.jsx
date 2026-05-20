@@ -4,6 +4,8 @@ import axios from 'axios';
 import { Package, Truck, ChevronRight } from 'lucide-react';
 import './MyOrders.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,8 +29,8 @@ const MyOrders = () => {
         const isAdminUser = userData?.user_type === '관리자' || userData?.user_type === 'admin' || userData?.role === 'admin';
         
         const endpoint = isAdminUser 
-          ? 'http://localhost:5000/api/orders' 
-          : 'http://localhost:5000/api/orders/myorders';
+          ? `${API_URL}/api/orders` 
+          : `${API_URL}/api/orders/myorders`;
           
         const res = await axios.get(endpoint, {
           headers: { Authorization: `Bearer ${token}` }
@@ -54,7 +56,7 @@ const MyOrders = () => {
       const userStr = localStorage.getItem('user');
       const { token } = JSON.parse(userStr);
 
-      const res = await axios.put(`http://localhost:5000/api/orders/${orderId}/status`, {
+      const res = await axios.put(`${API_URL}/api/orders/${orderId}/status`, {
         orderStatus: newStatus
       }, {
         headers: { Authorization: `Bearer ${token}` }

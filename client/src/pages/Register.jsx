@@ -4,6 +4,8 @@ import axios from 'axios';
 import { ChevronDown } from 'lucide-react';
 import './Register.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -40,7 +42,7 @@ function Register() {
         birthdate: birthdate.toISOString(),
       };
 
-      const response = await axios.post('http://localhost:5000/api/users', payload);
+      const response = await axios.post(`${API_URL}/api/users`, payload);
       
       if (response.data.success) {
         alert('회원가입이 완료되었습니다!');

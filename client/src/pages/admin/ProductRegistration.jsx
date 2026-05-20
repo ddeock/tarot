@@ -16,6 +16,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import './ProductRegistration.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const ProductRegistration = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -42,7 +44,7 @@ const ProductRegistration = () => {
     if (isEditMode) {
       const fetchProduct = async () => {
         try {
-          const response = await axios.get(`http://localhost:5000/api/products/${id}`);
+          const response = await axios.get(`${API_URL}/api/products/${id}`);
           if (response.data.success) {
             const product = response.data.data;
             setFormData({
@@ -127,9 +129,9 @@ const ProductRegistration = () => {
     try {
       let response;
       if (isEditMode) {
-        response = await axios.put(`http://localhost:5000/api/products/${id}`, productData);
+        response = await axios.put(`${API_URL}/api/products/${id}`, productData);
       } else {
-        response = await axios.post('http://localhost:5000/api/products', productData);
+        response = await axios.post(`${API_URL}/api/products`, productData);
       }
 
       if (response.data.success) {

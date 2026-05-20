@@ -4,6 +4,8 @@ import axios from 'axios';
 import { Heart, ChevronDown, Minus, Plus, ShoppingCart, CreditCard } from 'lucide-react';
 import './ProductDetail.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -18,7 +20,7 @@ const ProductDetail = () => {
       try {
         setLoading(true);
         // First try the backend
-        const response = await axios.get(`http://localhost:5000/api/products/${id}`);
+        const response = await axios.get(`${API_URL}/api/products/${id}`);
         if (response.data.success) {
           setProduct(response.data.data);
         }
@@ -75,7 +77,7 @@ const ProductDetail = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/cart',
+        `${API_URL}/api/cart`,
         {
           productId: productId,
           quantity: quantity

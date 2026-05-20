@@ -14,6 +14,8 @@ import axios from 'axios';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import './AdminDashboard.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const AdminDashboard = () => {
   const [orders, setOrders] = useState([]);
   const [users, setUsers] = useState([]);
@@ -33,9 +35,9 @@ const AdminDashboard = () => {
         const config = { headers: { Authorization: `Bearer ${token}` } };
         
         const [ordersRes, usersRes, productsRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/orders', config),
-          axios.get('http://localhost:5000/api/users', config),
-          axios.get('http://localhost:5000/api/products')
+          axios.get(`${API_URL}/api/orders`, config),
+          axios.get(`${API_URL}/api/users`, config),
+          axios.get(`${API_URL}/api/products`)
         ]);
 
         if (ordersRes.data.success) setOrders(ordersRes.data.data.reverse()); // 최신순으로 정렬되게

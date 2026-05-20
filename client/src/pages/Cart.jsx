@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Cart.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +20,7 @@ const Cart = () => {
         return;
       }
       const { token } = JSON.parse(userStr);
-      const res = await axios.get('http://localhost:5000/api/cart', {
+      const res = await axios.get(`${API_URL}/api/cart`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success && res.data.data) {
@@ -50,7 +52,7 @@ const Cart = () => {
         item.product._id === productId ? { ...item, quantity: newQuantity } : item
       ));
 
-      await axios.put(`http://localhost:5000/api/cart/items/${productId}`,
+      await axios.put(`${API_URL}/api/cart/items/${productId}`,
         { quantity: newQuantity },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -71,7 +73,7 @@ const Cart = () => {
     const { token } = JSON.parse(userStr);
 
     try {
-      await axios.delete(`http://localhost:5000/api/cart/items/${productId}`, {
+      await axios.delete(`${API_URL}/api/cart/items/${productId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setCartItems(prev => prev.filter(item => item.product._id !== productId));
@@ -90,7 +92,7 @@ const Cart = () => {
     const { token } = JSON.parse(userStr);
 
     try {
-      await axios.delete('http://localhost:5000/api/cart', {
+      await axios.delete(`${API_URL}/api/cart`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setCartItems([]);
@@ -130,7 +132,7 @@ const Cart = () => {
 
     try {
       for (const productId of selectedItems) {
-        await axios.delete(`http://localhost:5000/api/cart/items/${productId}`, {
+        await axios.delete(`${API_URL}/api/cart/items/${productId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
       }
