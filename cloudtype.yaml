@@ -1,0 +1,5 @@
+name: shopimg-mall-server
+app: node@20
+context: server
+options:
+  start: npm start
