@@ -29,11 +29,11 @@ const MyOrders = () => {
 
         const userData = JSON.parse(userStr);
         const { token } = userData;
-        
-        const endpoint = isAdminUser 
-          ? `${API_URL}/api/orders` 
+
+        const endpoint = isAdminUser
+          ? `${API_URL}/api/orders`
           : `${API_URL}/api/orders/myorders`;
-          
+
         const res = await axios.get(endpoint, {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -142,7 +142,7 @@ const MyOrders = () => {
                     ))}
                   </div>
 
-                  <div className="order-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div className="order-footer" style={{ display: 'flex', justifyContent: isAdminUser ? 'space-between' : 'flex-end', alignItems: 'center' }}>
                     {isAdminUser && (
                       <div className="status-select-wrapper">
                         <select
