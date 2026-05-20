@@ -133,15 +133,15 @@ const Checkout = () => {
 
     let pg = 'html5_inicis'; // default
     let pay_method = 'card';
-    
+
     if (paymentMethod === '카카오페이') {
       pg = 'kakaopay';
     } else if (paymentMethod === '네이버페이') {
       pg = 'naverpay';
     }
 
-    const orderName = cartItems.length > 1 
-      ? `${cartItems[0].product.name} 외 ${cartItems.length - 1}건` 
+    const orderName = cartItems.length > 1
+      ? `${cartItems[0].product.name} 외 ${cartItems.length - 1}건`
       : cartItems[0].product.name;
 
     const data = {
@@ -184,7 +184,7 @@ const Checkout = () => {
 
           if (res.data.success) {
             const orderId = res.data.data._id;
-            
+
             // 2. 장바구니 비우기
             try {
               await axios.delete(`${API_URL}/api/cart`, {
@@ -220,7 +220,7 @@ const Checkout = () => {
       <div className="checkout-container">
         {/* Left Section: Form inputs */}
         <div className="checkout-left">
-          
+
           <section className="checkout-section">
             <h2>주문 상품 정보</h2>
             <div className="order-items-list">
@@ -307,7 +307,7 @@ const Checkout = () => {
         <div className="checkout-right">
           <div className="sticky-summary">
             <h3>결제 요약</h3>
-            
+
             <div className="summary-row">
               <span>총 상품 금액</span>
               <span>{itemsPrice.toLocaleString()}원</span>
@@ -316,9 +316,9 @@ const Checkout = () => {
               <span>배송비</span>
               <span>{shippingPrice === 0 ? '무료' : `+${shippingPrice.toLocaleString()}원`}</span>
             </div>
-            
+
             <div className="summary-divider"></div>
-            
+
             <div className="summary-row final">
               <span>최종 결제 금액</span>
               <span className="total-amount">{totalPrice.toLocaleString()}원</span>
