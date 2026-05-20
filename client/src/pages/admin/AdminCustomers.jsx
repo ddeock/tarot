@@ -91,10 +91,11 @@ const AdminCustomers = () => {
 
   const stats = calculateStats();
 
-  const filteredCustomers = customers.filter(customer => 
-    customer.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.email?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredCustomers = customers.filter(customer => {
+    const nameMatch = customer.name && customer.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const emailMatch = customer.email && customer.email.toLowerCase().includes(searchTerm.toLowerCase());
+    return nameMatch || emailMatch;
+  });
 
   // Pagination Logic
   const indexOfLastItem = currentPage * itemsPerPage;

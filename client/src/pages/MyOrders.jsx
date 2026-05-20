@@ -29,7 +29,6 @@ const MyOrders = () => {
 
         const userData = JSON.parse(userStr);
         const { token } = userData;
-
         const endpoint = isAdminUser
           ? `${API_URL}/api/orders`
           : `${API_URL}/api/orders/myorders`;
@@ -161,7 +160,7 @@ const MyOrders = () => {
                     )}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <span className="total-label">총 결제금액</span>
-                      <span className="total-price">{order.totalPrice.toLocaleString()}원</span>
+                      <span className="total-price">{(order.totalPrice || 0).toLocaleString()}원</span>
                     </div>
                   </div>
                 </div>

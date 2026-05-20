@@ -205,7 +205,7 @@ const AdminOrders = () => {
                             <p className="product-name">{itemSummary}</p>
                           </div>
                         </td>
-                        <td className="price-cell">{order.totalPrice.toLocaleString()}원</td>
+                        <td className="price-cell">{(order.totalPrice || 0).toLocaleString()}원</td>
                         <td>
                           <span className={`status-badge ${getStatusBadgeClass(order.orderStatus)}`}>
                             {order.orderStatus}

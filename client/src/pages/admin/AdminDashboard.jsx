@@ -120,9 +120,9 @@ const AdminDashboard = () => {
   };
 
   const recentCustomers = users.slice(0, 4).map(u => ({
-    name: u.name,
-    email: u.email,
-    date: new Date(u.createdAt).toISOString().split('T')[0]
+    name: u.name || '이름 없음',
+    email: u.email || '',
+    date: u.createdAt ? new Date(u.createdAt).toISOString().split('T')[0] : '-'
   }));
 
   if (loading) {
