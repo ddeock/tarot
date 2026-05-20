@@ -113,7 +113,7 @@ const Home = () => {
                 >
                   <Heart size={18} />
                 </button>
-                <div className="badge">BEST</div>
+                <div className="mainbadge">BEST</div>
               </div>
               <div className="product-info">
                 <h3 className="product-name">{product.name}</h3>
@@ -150,7 +150,7 @@ const Home = () => {
                 >
                   <Heart size={18} />
                 </button>
-                <div className="badge" style={{ backgroundColor: '#1a1a1a' }}>NEW</div>
+                <div className="mainbadge" style={{ backgroundColor: '#1a1a1a' }}>NEW</div>
               </div>
               <div className="product-info">
                 <h3 className="product-name">{product.name}</h3>
