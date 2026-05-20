@@ -37,7 +37,7 @@ exports.protect = async (req, res, next) => {
 
 // 관리자 권한 확인 미들웨어
 exports.admin = (req, res, next) => {
-    if (req.user && req.user.user_type === '관리자') {
+    if (req.user && (req.user.user_type === '관리자' || req.user.user_type === 'admin' || req.user.role === 'admin')) {
         next();
     } else {
         res.status(403).json({ success: false, error: '관리자 권한이 필요합니다.' });

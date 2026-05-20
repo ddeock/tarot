@@ -9,12 +9,12 @@ const {
     getMe
 } = require('../controllers/userController');
 
-const { protect } = require('../middleware/auth');
+const { protect, admin } = require('../middleware/auth');
 
 const router = express.Router();
 
 // 1. 유저 전체 조회
-router.get('/', getUsers);
+router.get('/', protect, admin, getUsers);
 
 // 2. 유저 생성 (회원가입)
 router.post('/', createUser);

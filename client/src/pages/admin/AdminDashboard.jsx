@@ -34,15 +34,19 @@ const AdminDashboard = () => {
         const { token } = JSON.parse(userStr);
         const config = { headers: { Authorization: `Bearer ${token}` } };
         
-        const [ordersRes, usersRes, productsRes] = await Promise.all([
+        const results = await Promise.allSettled([
           axios.get(`${API_URL}/api/orders`, config),
           axios.get(`${API_URL}/api/users`, config),
           axios.get(`${API_URL}/api/products`)
         ]);
 
-        if (ordersRes.data.success) setOrders(ordersRes.data.data.reverse()); // 최신순으로 정렬되게
-        if (usersRes.data.success) setUsers(usersRes.data.data.reverse());
-        if (productsRes.data.success) setProducts(productsRes.data.data);
+        const ordersRes = results[0].status === 'fulfilled' ? results[0].value : null;
+        const usersRes = results[1].status === 'fulfilled' ? results[1].value : null;
+        const productsRes = results[2].status === 'fulfilled' ? results[2].value : null;
+
+        if (ordersRes && ordersRes.data.success) setOrders(ordersRes.data.data); // 서버에서 이미 최신순(createdAt: -1) 정렬되어 옴
+        if (usersRes && usersRes.data.success) setUsers(usersRes.data.data.reverse());
+        if (productsRes && productsRes.data.success) setProducts(productsRes.data.data);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {
@@ -103,7 +107,7 @@ const AdminDashboard = () => {
     customer: order.shippingAddress?.recipientName || (order.user ? order.user.name : '알수없음'),
     product: order.orderItems.length > 1 ? `${order.orderItems[0]?.name} 외 ${order.orderItems.length - 1}건` : order.orderItems[0]?.name,
     productImage: order.orderItems[0]?.image,
-    price: `₩${order.totalPrice.toLocaleString()}`,
+    price: `₩${(order.totalPrice || 0).toLocaleString()}`,
     status: order.orderStatus
   }));
 
