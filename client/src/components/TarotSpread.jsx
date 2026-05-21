@@ -39,6 +39,7 @@ export default function TarotSpread() {
   const [shuffledDeck, setShuffledDeck] = useState([]);
   const [selectedIndices, setSelectedIndices] = useState([]);
   const [showResult, setShowResult] = useState(false);
+  const [deckScale, setDeckScale] = useState(1);
 
   const initGame = () => {
     const deck = [...tarotData];
@@ -53,6 +54,19 @@ export default function TarotSpread() {
 
   useEffect(() => {
     initGame();
+
+    const handleResize = () => {
+      const screenWidth = window.innerWidth;
+      if (screenWidth < 1150) {
+        setDeckScale((screenWidth - 20) / 1150);
+      } else {
+        setDeckScale(1);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const handleCardClick = useCallback((index) => {
@@ -141,7 +155,10 @@ export default function TarotSpread() {
       )}
 
       <div className="deck-wrapper">
-        <div className="fan-deck">
+        <div 
+          className="fan-deck"
+          style={{ transform: `scale(${deckScale}) ${deckScale < 1 ? 'translateY(-30px)' : ''}` }}
+        >
           {shuffledDeck.map((card, index) => {
             const isSelected = selectedIndices.includes(index);
             const selectOrder = selectedIndices.indexOf(index) + 1;
