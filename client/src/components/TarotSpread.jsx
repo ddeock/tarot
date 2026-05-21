@@ -2,19 +2,37 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { tarotData } from '../data/tarotData';
 import './TarotSpread.css';
 
-const TarotCardItem = React.memo(({ index, isSelected, selectOrder, totalCards, onClick }) => {
+const TarotCardItem = React.memo(({ index, isSelected, selectOrder, totalCards, onClick, isMobile }) => {
   const midIndex = (totalCards - 1) / 2;
 
-  // 💡 [수정] 78장의 원들이 겹치며 아름답고 자연스러운 고전 타로 매장의 아치를 그리도록 분산도 조율
-  const anglePerCard = 0.52;
-  const rotate = (index - midIndex) * anglePerCard;
+  let baseTransform = '';
 
-  // 크기가 복원된 카드가 균일한 간격을 가지며 펼쳐지도록 수평 폭 보정
-  const translateX = (index - midIndex) * 11.2;
-  // 양 날개가 바닥으로 내려갈 때 짤림 각도가 발생하지 않도록 부드러운 하강 포물선 방정식 대입
-  const translateY = Math.pow(index - midIndex, 2) * 0.046;
-
-  const baseTransform = `translateX(${translateX}px) translateY(${translateY}px) rotate(${rotate}deg)`;
+  if (isMobile) {
+    // 3줄 솔리테어식 겹침 구조 (78장 = 줄당 26장)
+    const rowIndex = Math.floor(index / 26);
+    const colIndex = index % 26;
+    
+    const colMid = 25 / 2; 
+    const stepX = 10; // 가로 겹침 간격
+    const stepY = 110; // 세로 겹침 간격
+    
+    const translateX = (colIndex - colMid) * stepX;
+    const translateY = (rowIndex - 2) * stepY; // row 0: -220, row 1: -110, row 2: 0
+    const rotate = 0;
+    
+    baseTransform = `translateX(${translateX}px) translateY(${translateY}px) rotate(${rotate}deg)`;
+  } else {
+    // 💡 [수정] 78장의 원들이 겹치며 아름답고 자연스러운 고전 타로 매장의 아치를 그리도록 분산도 조율
+    const anglePerCard = 0.52;
+    const rotate = (index - midIndex) * anglePerCard;
+  
+    // 크기가 복원된 카드가 균일한 간격을 가지며 펼쳐지도록 수평 폭 보정
+    const translateX = (index - midIndex) * 11.2;
+    // 양 날개가 바닥으로 내려갈 때 짤림 각도가 발생하지 않도록 부드러운 하강 포물선 방정식 대입
+    const translateY = Math.pow(index - midIndex, 2) * 0.046;
+  
+    baseTransform = `translateX(${translateX}px) translateY(${translateY}px) rotate(${rotate}deg)`;
+  }
 
   return (
     <div
@@ -40,6 +58,7 @@ export default function TarotSpread() {
   const [selectedIndices, setSelectedIndices] = useState([]);
   const [showResult, setShowResult] = useState(false);
   const [deckScale, setDeckScale] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
 
   const initGame = () => {
     const deck = [...tarotData];
@@ -57,10 +76,12 @@ export default function TarotSpread() {
 
     const handleResize = () => {
       const screenWidth = window.innerWidth;
-      if (screenWidth < 1150) {
+      setIsMobile(screenWidth < 768);
+      
+      if (screenWidth >= 768 && screenWidth < 1150) {
         setDeckScale((screenWidth - 20) / 1150);
       } else {
-        setDeckScale(1);
+        setDeckScale(1); // 모바일은 새로운 구조를 사용하므로 scale 축소 불필요
       }
     };
 
@@ -171,6 +192,7 @@ export default function TarotSpread() {
                 selectOrder={selectOrder}
                 totalCards={shuffledDeck.length}
                 onClick={handleCardClick}
+                isMobile={isMobile}
               />
             );
           })}
